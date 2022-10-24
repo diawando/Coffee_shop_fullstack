@@ -15,14 +15,7 @@ with app.app_context():
     db_drop_and_create_all()
 
 # ROUTES
-'''
-@TODO implement endpoint
-    GET /drinks
-        it should be a public endpoint
-        it should contain only the drink.short() data representation
-    returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
-        or appropriate status code indicating reason for failure
-'''
+
 #####################################################################################
 #
 #    Endpoint pour recuperer la liste courte des boissons
@@ -39,6 +32,23 @@ def show_drinks():
         "drinks": drinks
     })
     
+
+#####################################################################################
+#
+#    Endpoint pour recuperer la liste des boissons avec les details
+#
+#####################################################################################
+@app.route('/drinks-detail')
+@requires_auth('get:drinks-detail')
+def show_drinks_with_detail():
+    selection = Drink.query.order_by(Drink.id).all()
+    
+    drinks = [drink.long() for drink in selection]
+    
+    return jsonify({
+        "success": True,
+        "drinks": drinks
+    })
     
 
 '''
@@ -50,23 +60,8 @@ def show_drinks():
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
         or appropriate status code indicating reason for failure
 '''
-#################################################################################################################
-#
-#    Endpoint pour recuperer la liste  des boissons avec leurs details, la permission post:drinks' est requise
-#
-#################################################################################################################
-@app.route('/drinks-detail')
-def get_drinks_with_detail():
-     selection = Drink.query.order_by(Drink.id).all()
-    
-     drinks = [drink.long() for drink in selection]
-    
-     return jsonify({
-        "success": True,
-        "drinks": drinks
-      })
-    
-    
+
+
 '''
 @TODO implement endpoint
     PATCH /drinks/<id>

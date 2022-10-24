@@ -8,9 +8,9 @@ import os
 
 load_dotenv()
 
-AUTH0_DOMAIN = os.getev('AUTH0_DOMAIN')
+AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
 ALGORITHMS = ['RS256']
-API_AUDIENCE = os.get('API_AUDIENCE')
+API_AUDIENCE = os.getenv('API_AUDIENCE')
 
 ## AuthError Exception
 '''
