@@ -11,13 +11,8 @@ app = Flask(__name__)
 setup_db(app)
 CORS(app)
 
-'''
-@TODO uncomment the following line to initialize the datbase
-!! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
-!! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
-!! Running this function will add one
-'''
-# db_drop_and_create_all()
+with app.app_context():
+    db_drop_and_create_all()
 
 # ROUTES
 '''
@@ -28,17 +23,23 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
-
-
-'''
-@TODO implement endpoint
-    GET /drinks-detail
-        it should require the 'get:drinks-detail' permission
-        it should contain the drink.long() data representation
-    returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
-        or appropriate status code indicating reason for failure
-'''
-
+#####################################################################################
+#
+#    Endpoint pour recuperer la liste courte des boissons
+#
+#####################################################################################
+@app.route('/drinks')
+def show_drinks():
+    selection = Drink.query.order_by(Drink.id).all()
+    
+    drinks = [drink.short() for drink in selection]
+    
+    return jsonify({
+        "success": True,
+        "drinks": drinks
+    })
+    
+    
 
 '''
 @TODO implement endpoint
@@ -49,8 +50,23 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
         or appropriate status code indicating reason for failure
 '''
-
-
+#################################################################################################################
+#
+#    Endpoint pour recuperer la liste  des boissons avec leurs details, la permission post:drinks' est requise
+#
+#################################################################################################################
+@app.route('/drinks-detail')
+def get_drinks_with_detail():
+     selection = Drink.query.order_by(Drink.id).all()
+    
+     drinks = [drink.long() for drink in selection]
+    
+     return jsonify({
+        "success": True,
+        "drinks": drinks
+      })
+    
+    
 '''
 @TODO implement endpoint
     PATCH /drinks/<id>
